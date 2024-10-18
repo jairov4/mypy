@@ -809,8 +809,8 @@ def gen_glue_ne_method(builder: IRBuilder, cls: ClassIR, line: int) -> None:
     with builder.enter_method(cls, "__ne__", eq_sig.ret_type):
         rhs_type = eq_sig.args[0].type if strict_typing else object_rprimitive
         rhs_arg = builder.add_argument("rhs", rhs_type)
-        eqval = builder.add(MethodCall(builder.self(), "__eq__", [rhs_arg], line))
-
+        rhs = builder.coerce(rhs_arg, func_ir.args[1].type, line)
+        eqval = builder.add(MethodCall(builder.self(), "__eq__", [rhs], line))
         can_return_not_implemented = is_subtype(not_implemented_op.type, eq_sig.ret_type)
         return_bool = is_subtype(eq_sig.ret_type, bool_rprimitive)
 
